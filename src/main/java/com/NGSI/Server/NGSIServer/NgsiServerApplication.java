@@ -5,7 +5,8 @@ import com.NGSI.Server.NGSIServer.model.Vehicle;
 import com.NGSI.Server.NGSIServer.service.NGSIClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.http.codec.xml.Jaxb2XmlDecoder;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -27,11 +28,13 @@ public class NgsiServerApplication {
 //		System.out.println("Saved Vehicle with ID: " + vehicleId);
 
 		System.out.println("-------------------------------");
-		List<Parking> parkings = ngsiClient.findAllParkings();
-		System.out.println("All Parkings: " + parkings);
+		ngsiClient.findAllParkings();
+		//System.out.println("All Parkings: " + parkings);
 		System.out.println("-------------------------------");
-		List<Vehicle> vehicles = ngsiClient.findAllVehicles();
-		System.out.println("All Vehicles: " + vehicles);
+		ngsiClient.findAllVehicles();
+		System.out.println("-------------------------------");
+		ngsiClient.findVehicle("urn:ngsi-ld:Vehicle:X7890");
+		//System.out.println("All Vehicles: " + vehicles);
 
 //		String specificParkingId = /**/;
 //		Parking specificParking = ngsiClient.findParking(specificParkingId);

@@ -17,61 +17,109 @@ public class NGSIClient {
         this.webClient = webClientBuilder.build();
     }
 
-    public String saveParking(Parking parking) {
-        ResponseEntity<String> response = webClient.post()
-                .uri("/Parking")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(parking)
-                .retrieve()
-                .toEntity(String.class)
-                .block();
+//    public String saveParking(Parking parking) {
+//        ResponseEntity<String> response = webClient.post()
+//                .uri("/Parking")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue(parking)
+//                .retrieve()
+//                .toEntity(String.class)
+//                .block();
+//
+//        return response.getBody();
+//    }
+//
+//    public String saveVehicle(Vehicle vehicle) {
+//        ResponseEntity<String> response = webClient.post()
+//                .uri("/Vehicle")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue(vehicle)
+//                .retrieve()
+//                .toEntity(String.class)
+//                .block();
+//
+//        return response.getBody();
+//    }
 
-        return response.getBody();
-    }
-
-    public String saveVehicle(Vehicle vehicle) {
-        ResponseEntity<String> response = webClient.post()
-                .uri("/Vehicle")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(vehicle)
-                .retrieve()
-                .toEntity(String.class)
-                .block();
-
-        return response.getBody();
-    }
-
-    public List<Parking> findAllParkings() {
+    /**
+     *
+     * die Lösung mit JSON
+     */
+//    public List<Parking> findAllParkings() {
+//        return webClient.get()
+//                .uri("/Parkings")
+//                .retrieve()
+//                .bodyToFlux(Parking.class)
+//                .collectList()
+//                .block();
+//    }
+//
+//    public List<Vehicle> findAllVehicles() {
+//        return webClient.get()
+//                .uri("/Vehicles")
+//                .retrieve()
+//                .bodyToFlux(Vehicle.class)
+//                .collectList()
+//                .block();
+//    }
+//
+//    public Parking findParking(String parkingId) {
+//        return webClient.get()
+//                .uri("/Parking/{parking-id}", parkingId)
+//                .retrieve()
+//                .bodyToMono(Parking.class)
+//                .block();
+//    }
+//
+//    public Vehicle findVehicle(String vehicleId) {
+//        return webClient.get()
+//                .uri("/Vehicle/{vehicle-id}", vehicleId)
+//                .retrieve()
+//                .bodyToMono(Vehicle.class)
+//                .block();
+//    }
+    /**
+     * die Lösung mit XML
+     */
+    public List<String> findAllParkings() {
         return webClient.get()
                 .uri("/Parkings")
+                .accept(MediaType.APPLICATION_XML)
                 .retrieve()
-                .bodyToFlux(Parking.class)
+                .bodyToFlux(String.class)
+                .doOnNext(xmlString -> System.out.println("XML Response: " + xmlString))
                 .collectList()
                 .block();
     }
 
-    public List<Vehicle> findAllVehicles() {
+    public List<String> findAllVehicles() {
         return webClient.get()
                 .uri("/Vehicles")
+                .accept(MediaType.APPLICATION_XML)
                 .retrieve()
-                .bodyToFlux(Vehicle.class)
+                .bodyToFlux(String.class)
+                .doOnNext(xmlString -> System.out.println("XML Response: " + xmlString))
                 .collectList()
                 .block();
     }
 
-    public Parking findParking(String parkingId) {
+    public String findParking(String parkingId) {
         return webClient.get()
                 .uri("/Parking/{parking-id}", parkingId)
+                .accept(MediaType.APPLICATION_XML)
                 .retrieve()
-                .bodyToMono(Parking.class)
+                .bodyToMono(String.class)
+                .doOnNext(xmlString -> System.out.println("XML Response: " + xmlString))
                 .block();
     }
 
-    public Vehicle findVehicle(String vehicleId) {
+    public String findVehicle(String vehicleId) {
         return webClient.get()
                 .uri("/Vehicle/{vehicle-id}", vehicleId)
+                .accept(MediaType.APPLICATION_XML)
                 .retrieve()
-                .bodyToMono(Vehicle.class)
+                .bodyToMono(String.class)
+                .doOnNext(xmlString -> System.out.println("XML Response: " + xmlString))
                 .block();
     }
 }

@@ -1,10 +1,15 @@
 package com.NGSI.Server.NGSIServer.service;
+import com.NGSI.Server.NGSIServer.dto.XmlResponse;
 import com.NGSI.Server.NGSIServer.model.Parking;
 import com.NGSI.Server.NGSIServer.model.Vehicle;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+
 
 import java.util.List;
 
@@ -16,7 +21,10 @@ public class NGSIClient {
     public NGSIClient(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
     }
-
+    /**
+     *
+     * die Lösung mit JSON
+     */
 //    public String saveParking(Parking parking) {
 //        ResponseEntity<String> response = webClient.post()
 //                .uri("/Parking")
@@ -40,11 +48,6 @@ public class NGSIClient {
 //
 //        return response.getBody();
 //    }
-
-    /**
-     *
-     * die Lösung mit JSON
-     */
 //    public List<Parking> findAllParkings() {
 //        return webClient.get()
 //                .uri("/Parkings")
@@ -81,6 +84,42 @@ public class NGSIClient {
     /**
      * die Lösung mit XML
      */
+    public String createParking(Parking parking) {
+        return webClient.post()
+                .uri("/Parking")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(parking))
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnNext(response ->{
+                    String xmlResponse = convertJsonToXml(response);
+                    System.out.println("Create Parking Response (XML): " + xmlResponse);
+                })
+                .block();
+    }
+    private String convertJsonToXml(String jsonResponse) {
+        try {
+            XmlResponse parkingXmlResponse = new XmlResponse(jsonResponse);
+            XmlMapper xmlMapper = new XmlMapper();
+            return xmlMapper.writeValueAsString(parkingXmlResponse);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public String createVehicle(Vehicle vehicle) {
+        return webClient.post()
+                .uri("/Vehicle")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(vehicle))
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnNext(response ->{
+                    String xmlResponse = convertJsonToXml(response);
+                    System.out.println("Create Parking Response (XML): " + xmlResponse);
+                })
+                .block();
+    }
     public List<String> findAllParkings() {
         return webClient.get()
                 .uri("/Parkings")
